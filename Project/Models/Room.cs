@@ -10,7 +10,7 @@ namespace ConsoleAdventure.Project.Models
     public int RoomCode { get; set; }
     public string Description { get; set; }
     public List<Item> Items { get; set; } = new List<Item>();
-    public Dictionary<string, Room> Exits { get; set; }
+    public Dictionary<string, IRoom> Exits { get; set; }
 
     private void AddItem(Item item)
     {
@@ -20,16 +20,17 @@ namespace ConsoleAdventure.Project.Models
     {
       Items.AddRange(items);
     }
-    private void AddRoom(Room exit)
+    public void AddExit(string direction, IRoom exit)
     {
-      Exits.Add($"{exit.RoomCode}", exit);
+      Exits.Add(direction, exit);
     }
-    public Room(string name, string description)
+    public Room(string name, string description, int code)
     {
       Name = name;
       Description = description;
+      RoomCode = code;
       Items = new List<Item>();
-      Exits = new Dictionary<string, Room>();
+      Exits = new Dictionary<string, IRoom>();
     }
   }
 }

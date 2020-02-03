@@ -7,25 +7,29 @@ namespace ConsoleAdventure.Project
 {
   public class GameService : IGameService
   {
-    private IGame _game { get; set; }
+    public IGame _game { get; set; } = new Game();
 
-    public List<string> Messages { get; set; }
-    public GameService()
-    {
-      _game = new Game();
-      Messages = new List<string>();
-    }
+    public List<string> Messages { get; set; } = new List<string>();
 
     // NOTE Don't forget safety checks.
     public void Go(string direction)
     {
-      // TODO
+      IRoom destination;
+
+      if (_game.CurrentRoom.Exits.TryGetValue(direction, out destination))
+      {
+        _game.CurrentRoom = destination;
+        Look();
+      }
+      else
+      {
+        Console.WriteLine("You can't go that way.");
+      }
     }
 
     internal void PrintMain()
     {
-      Console.Clear();
-      Console.WriteLine(@"
+      Messages.Add(@"
 
    _____   .__   .__                  .___                           .___                     
   /  _  \  |  |  |__|  ____    ____   |   |  ____ ___  _______     __| _/ ____ _______  ______
@@ -35,20 +39,20 @@ namespace ConsoleAdventure.Project
         \/                \/      \/            \/            \/      \/     \/            \/ 
 
 ");
-      // TODO add if(player.location == here)
-      //           {Console.Writeline("Map with cur location")}
-      Console.WriteLine(@"--------Map--------
-
+      Messages.Add("     -------------------------------------Map--------------------------------------");
+      if (_game.CurrentRoom.RoomCode == 1)
+      {
+        Messages.Add(@"
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
 ####@@@@@@@@@@@@@@@@@@@@@################@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####################
 ####@   ____  _         @################@                          @#####################
 ####@  /--_-\| |        @################@                          @#####################
-####@ |  |_| | |        @################@                          @#####################
-####@ |   _  | |        @################@                          @#####################
-####@ |  | | | |        @################@                          @#####################
-####@ ---------         @################@                          @#####################
+####@ |  |_| | |    You @################@                          @#####################
+####@ |   _  | |    \o/ @################@                          @#####################
+####@ |  | | | |     |  @################@                          @#####################
+####@ ---------     / \ @################@                          @#####################
 ####@@@@@@@@@@@@@@@@@  @@################@@@@@  @@@@@@@@@@@@@@@@@@@@@#####################
 ###################@@  @@@@@@@@@@@@@@@@@@@@@@@  @@@@@#####################################
 ###################@                                @#####################################
@@ -59,6 +63,17 @@ namespace ConsoleAdventure.Project
 ###################@                                @#####################################
 ###################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####################################
 ");
+      }
+      //TODO make map for area 2 
+      else if (_game.CurrentRoom.RoomCode == 2)
+      {
+        Messages.Add(@"");
+      }
+      // TODO make map for area 3
+      else
+      {
+        Messages.Add(@"");
+      }
     }
 
     public void Help()
@@ -77,21 +92,15 @@ namespace ConsoleAdventure.Project
     public void Inventory()
     {
       Messages.Add("Inventory:");
-      // TODO for each item in player inventory add msg 
-      // foreach (var item in player.Inventory)
-      // {
-      //   Messages.Add($"{item.Name}: {item.Description}")
-      // }
+      foreach (var item in _game.CurrentPlayer.Inventory)
+      {
+        Messages.Add($"{item.Name}: {item.Description}");
+      }
     }
 
     public void Look()
     {
-      // TODO
-    }
-
-    public void Quit()
-    {
-      // TODO
+      Console.WriteLine($"{_game.CurrentRoom.Description}");
     }
 
     public void Reset()
