@@ -80,9 +80,7 @@ namespace ConsoleAdventure.Project
       Messages.Add(@"Command List:
       Go (North, South, East, or West),
       Inventory: displays current player items,
-      Look: examines current location, and reveals items,
-      EnterBuilding (building name): enters selected building,
-      ExitBuilding: takes player back to city/main area,
+      Look: examines current location and reveals items,
       Reset: restarts game,
       TakeItem (item name): takes item from room if available,
       UseItem (item name): uses item from inventory or room if available");
@@ -143,7 +141,20 @@ namespace ConsoleAdventure.Project
 
     public void UseItem(string itemName)
     {
-
+      if (_game.CurrentRoom.RoomCode == 4 && itemName == "cellphone" && _game.CurrentPlayer.Inventory.Exists(i => i.Name == "cellphone"))
+      {
+        Messages.Add("You give the strange alien your nokia. After speaking on the phone for a while in some strange tongue, hundreds of UFOs fill the sky. Good job you just helped an alien call for backup");
+        Messages.Add("Game Over");
+      }
+      else if (_game.CurrentRoom.RoomCode == 4 && itemName == "raygun" && _game.CurrentPlayer.Inventory.Exists(i => i.Name == "raygun"))
+      {
+        Messages.Add("The alien scourge is no more, no longer will Donald rant about those dang aliens.");
+        Messages.Add("You win.");
+      }
+      else
+      {
+        Messages.Add("That didn't seem to do anything");
+      }
     }
   }
 }
