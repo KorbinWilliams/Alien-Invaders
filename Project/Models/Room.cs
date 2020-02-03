@@ -9,7 +9,7 @@ namespace ConsoleAdventure.Project.Models
     public string Name { get; set; }
     public int RoomCode { get; set; }
     public string Description { get; set; }
-    public List<Item> Items { get; set; } = new List<Item>();
+    public List<Item> Items { get; set; }
     public Dictionary<string, IRoom> Exits { get; set; }
 
     private void AddItem(Item item)

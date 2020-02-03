@@ -10,7 +10,6 @@ namespace ConsoleAdventure.Project.Controllers
   {
     private GameService _gameService { get; set; } = new GameService();
 
-    //NOTE Makes sure everything is called to finish Setup and Starts the Game loop
     private bool _running { get; set; } = true;
     public void Run()
     {
@@ -43,22 +42,27 @@ namespace ConsoleAdventure.Project.Controllers
           _gameService.Inventory();
           break;
         case "take":
-          var i = _gameService._game.CurrentRoom.Items.Find(i => option == i.Name);
-          if (i.Name != option)
-          {
-            Console.WriteLine("that item does not exist in this room.");
-          }
-          else
-          {
-            _gameService._game.CurrentPlayer.Inventory.Add(i);
-          }
+          _gameService.TakeItem(option);
+          break;
+        case "reset":
+          _gameService.Reset();
+          break;
+        case "go":
+          Console.Clear();
+          _gameService.Go(option);
+          break;
+        case "look":
+          _gameService.Look();
+          break;
+        case "use":
+          _gameService.UseItem(option);
           break;
         default:
+          Console.WriteLine("That is not a proper command type help for a list of commands.");
           break;
       }
     }
 
-    //NOTE this should print your messages for the game.
     private void Print()
     {
       foreach (var message in _gameService.Messages)

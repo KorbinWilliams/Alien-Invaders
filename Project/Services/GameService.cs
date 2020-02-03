@@ -14,16 +14,20 @@ namespace ConsoleAdventure.Project
     // NOTE Don't forget safety checks.
     public void Go(string direction)
     {
-      IRoom destination;
+      // IRoom destination;
 
-      if (_game.CurrentRoom.Exits.TryGetValue(direction, out destination))
+      // if (_game.CurrentRoom.Exits.TryGetValue(direction, out destination))
+      // {
+      //   _game.CurrentRoom = destination;
+      // }
+      if (_game.CurrentRoom.Exits.ContainsKey(direction))
       {
-        _game.CurrentRoom = destination;
-        Look();
+        _game.CurrentRoom = _game.CurrentRoom.Exits[direction];
+        // return;
       }
       else
       {
-        Console.WriteLine("You can't go that way.");
+        Messages.Add("You can't go that way.");
       }
     }
 
@@ -40,48 +44,43 @@ namespace ConsoleAdventure.Project
 
 ");
       Messages.Add("     -------------------------------------Map--------------------------------------");
-      if (_game.CurrentRoom.RoomCode == 1)
-      {
-        Messages.Add(@"
+
+      Messages.Add(@"
+
 ##########################################################################################
 ##########################################################################################
 ##########################################################################################
 ####@@@@@@@@@@@@@@@@@@@@@################@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####################
-####@   ____  _         @################@                          @#####################
-####@  /--_-\| |        @################@                          @#####################
-####@ |  |_| | |    You @################@                          @#####################
-####@ |   _  | |    \o/ @################@                          @#####################
-####@ |  | | | |     |  @################@                          @#####################
-####@ ---------     / \ @################@                          @#####################
+####@   ____  _         @################@       _____     _____    @#####################
+####@  /--_-\|_|        @################@      /|\ /|\   /|\ /|\   @#####################
+####@ |  |_| |/|        @################@     / |/_\| \ / |/_\| \  @#####################
+####@ |   _  |\|        @################@_______/   \_____/   \____@#####################
+####@)|__|_|_|/|((((((((@################@__________________________@#####################
+####@    \ \            @################@                          @#####################
 ####@@@@@@@@@@@@@@@@@  @@################@@@@@  @@@@@@@@@@@@@@@@@@@@@#####################
-###################@@  @@@@@@@@@@@@@@@@@@@@@@@  @@@@@#####################################
-###################@                                @#####################################
-###################@                                @#####################################
-###################@                                @#####################################
-###################@                                @#####################################
-###################@                                @#####################################
-###################@                                @#####################################
-###################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#####################################
+###################@@  @@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@############################
+###################@   ________         @                    @############################
+###################@  |_hotel__|        @                    @############################
+###################@  |  _   _ |                             @############################
+###################@  | |X| |_||            ___        ___   @############################
+###################@  |  _   _ |        @_ /   \      /   \  @############################
+###################@  | |_| |_||        @|/_____\    /_____\ @############################
+###################@  |    _   |        @|   _   |  |   _   |@############################
+###################@__|___| |__|________@|__| |__|__|__| |__|@############################
+###################@ - - - - - - - - - -@                    @############################
+###################@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@############################
 ");
-      }
-      //TODO make map for area 2 
-      else if (_game.CurrentRoom.RoomCode == 2)
-      {
-        Messages.Add(@"");
-      }
-      // TODO make map for area 3
-      else
-      {
-        Messages.Add(@"");
-      }
+      Messages.Add($@"{_game.CurrentRoom.Name}
+      {_game.CurrentRoom.Description}");
     }
+
 
     public void Help()
     {
       Messages.Add(@"Command List:
       Go (North, South, East, or West),
       Inventory: displays current player items,
-      Look: examines current location,
+      Look: examines current location, and reveals items,
       EnterBuilding (building name): enters selected building,
       ExitBuilding: takes player back to city/main area,
       Reset: restarts game,
@@ -91,36 +90,60 @@ namespace ConsoleAdventure.Project
 
     public void Inventory()
     {
-      Messages.Add("Inventory:");
+      Messages.Add(@"
+      Inventory:
+      ");
       foreach (var item in _game.CurrentPlayer.Inventory)
       {
-        Messages.Add($"{item.Name}: {item.Description}");
+        Messages.Add($"{item.Name}: {item.Description} ");
       }
     }
 
     public void Look()
     {
-      Console.WriteLine($"{_game.CurrentRoom.Description}");
+      Messages.Add($"{_game.CurrentRoom.Description}");
+      if (_game.CurrentRoom.RoomCode == 2)
+      {
+        Messages.Add("a Nokia cellphone lies in the middle of a crater.");
+      }
+      else if (_game.CurrentRoom.RoomCode == 3)
+      {
+        Messages.Add("There seems to be some sort of raygun next to an aliens body.");
+      }
+      else if (_game.CurrentRoom.RoomCode == 4)
+      {
+        Messages.Add("A weird alien asking for a phone comes up to you what do you want to do?");
+      }
     }
 
     public void Reset()
     {
-      // TODO
+      // var room = _game.Rooms.Find(r => r.RoomCode == 1);
+      // _game.CurrentRoom = room;
+      // _game.CurrentPlayer.Inventory.Clear();
     }
 
     public void Setup(string playerName)
     {
-      // TODO
+      // TODO is this required?
     }
 
     public void TakeItem(string itemName)
     {
-      // TODO
+      if (_game.CurrentRoom.Items.Exists(i => i.Name == itemName))
+      {
+        var i = _game.CurrentRoom.Items.Find(i => itemName == i.Name);
+        _game.CurrentPlayer.Inventory.Add(i);
+      }
+      else
+      {
+        Console.WriteLine("that item does not exist in this room.");
+      }
     }
 
     public void UseItem(string itemName)
     {
-      // TODO
+
     }
   }
 }
